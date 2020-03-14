@@ -16,10 +16,12 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
+        timestamps: false,
         type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
+        timestamps: true,
         type: Sequelize.DATE
       }
     });
