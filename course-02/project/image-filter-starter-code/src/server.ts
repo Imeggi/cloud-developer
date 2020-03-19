@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import { runInNewContext } from 'vm';
 
 (async () => {
 
@@ -31,6 +32,28 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   //! END @TODO1
   
+  app.get('/filteredimage', async ( req, res ) => {
+//    1. validate the image_url query
+      const image_url: string = req.query.image_url;
+      if(!image_url) {
+        res.status(400).send('faulty request missing public image url');
+      }
+      else {
+        const imagePath = await filterImageFromURL(image_url);
+        res.status(200).sendFile(imagePath);
+        res.on('finish', function(){
+          deleteLocalFiles([imagePath]);
+     });
+
+      }
+
+
+  //    2. call filterImageFromURL(image_url) to filter the image
+  //    3. send the resulting file in the response
+  //    4. deletes any files on the server on finish of the response
+  });
+
+
   // Root Endpoint
   // Displays a simple message to the user
   app.get( "/", async ( req, res ) => {
