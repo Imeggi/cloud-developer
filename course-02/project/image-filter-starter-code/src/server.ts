@@ -1,4 +1,5 @@
 import express from 'express';
+import { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 import { runInNewContext } from 'vm';
@@ -32,14 +33,14 @@ import { runInNewContext } from 'vm';
 
   //! END @TODO1
   
-  app.get('/filteredimage', async ( req, res ) => {
+  app.get('/filteredimage', async (req: Request, res: Response) => {
 //    1. validate the image_url query
       const image_url: string = req.query.image_url;
       if(!image_url) {
         res.status(400).send('faulty request missing public image url');
       }
       else {
-        const imagePath = await filterImageFromURL(image_url);
+        const imagePath: string = await filterImageFromURL(image_url);
         res.status(200).sendFile(imagePath);
         res.on('finish', function(){
           deleteLocalFiles([imagePath]);
